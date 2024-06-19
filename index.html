@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noting Tool</title>
+    <style>
+        .section {
+            border: 1px solid #ccc;
+            margin: 10px 0;
+            padding: 10px;
+        }
+        .section h2 {
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        .content {
+            display: block;
+            margin-top: 10px;
+        }
+        .table {
+            width: 100%;
+        }
+        .table th, .table td {
+            padding: 8px;
+            text-align: left;
+        }
+        .toggle-btn {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Noting Tool</h1>
+
+    <div class="section" id="section1">
+        <h2>Section 1: Information Fields <button class="toggle-btn" onclick="toggleSection('section1')">-</button></h2>
+        <div class="content">
+            <form id="infoForm">
+                <div>
+                    <label for="field1">Field 1:</label>
+                    <input type="text" id="field1" name="field1">
+                </div>
+                <!-- Add 9 more fields similarly -->
+                <div>
+                    <label for="field10">Field 10:</label>
+                    <input type="text" id="field10" name="field10">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="section" id="section2">
+        <h2>Section 2: Item Checklist <button class="toggle-btn" onclick="toggleSection('section2')">-</button></h2>
+        <div class="content">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Check</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Item 1</td>
+                        <td><input type="checkbox" id="item1" name="item1"></td>
+                    </tr>
+                    <!-- Add more items similarly -->
+                    <tr>
+                        <td>Item 5</td>
+                        <td><input type="checkbox" id="item5" name="item5"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section" id="section3">
+        <h2>Section 3: Email Body <button class="toggle-btn" onclick="toggleSection('section3')">-</button></h2>
+        <div class="content">
+            <textarea id="emailBody" rows="10" cols="50">Your email content here...</textarea>
+            <br>
+            <button onclick="copyEmailBody()">Copy Email Body</button>
+        </div>
+    </div>
+
+    <div class="section" id="section4">
+        <h2>Section 4: Summary <button class="toggle-btn" onclick="toggleSection('section4')">-</button></h2>
+        <div class="content">
+            <textarea id="summary" rows="10" cols="50" readonly></textarea>
+            <br>
+            <button onclick="generateSummary()">Generate Summary</button>
+        </div>
+    </div>
+
+    <div class="section" id="section5">
+        <h2>Section 5: Conditional Content <button class="toggle-btn" onclick="toggleSection('section5')">-</button></h2>
+        <div class="content">
+            <label for="dropdown">Choose an option:</label>
+            <select id="dropdown" onchange="updateConditionalContent()">
+                <option value="none">Select an option</option>
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+            </select>
+            <div id="conditionalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const content = section.querySelector('.content');
+            const button = section.querySelector('.toggle-btn');
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                button.textContent = '+';
+            } else {
+                content.style.display = 'block';
+                button.textContent = '-';
+            }
+        }
+
+        document.querySelectorAll('.section').forEach((section) => {
+            const content = section.querySelector('.content');
+            const button = section.querySelector('.toggle-btn');
+            content.style.display = 'block';
+            button.textContent = '-';
+        });
+
+        function updateConditionalContent() {
+            const dropdown = document.getElementById('dropdown');
+            const conditionalContent = document.getElementById('conditionalContent');
+            conditionalContent.innerHTML = '';
+
+            if (dropdown.value === 'option1') {
+                for (let i = 1; i <= 5; i++) {
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = `option1_checkbox${i}`;
+                    checkbox.name = `option1_checkbox${i}`;
+                    const label = document.createElement('label');
+                    label.htmlFor = checkbox.id;
+                    label.textContent = `Option 1 Checkbox ${i}`;
+                    conditionalContent.appendChild(checkbox);
+                    conditionalContent.appendChild(label);
+                    conditionalContent.appendChild(document.createElement('br'));
+                }
+            } else if (dropdown.value === 'option2') {
+                for (let i = 1; i <= 3; i++) {
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = `option2_checkbox${i}`;
+                    checkbox.name = `option2_checkbox${i}`;
+                    const label = document.createElement('label');
+                    label.htmlFor = checkbox.id;
+                    label.textContent = `Option 2 Checkbox ${i}`;
+                    conditionalContent.appendChild(checkbox);
+                    conditionalContent.appendChild(label);
+                    conditionalContent.appendChild(document.createElement('br'));
+                }
+                const subDropdown = document.createElement('select');
+                subDropdown.id = 'subDropdown';
+                subDropdown.name = 'subDropdown';
+                const optionYes = document.createElement('option');
+                optionYes.value = 'yes';
+                optionYes.textContent = 'Yes';
+                const optionNo = document.createElement('option');
+                optionNo.value = 'no';
+                optionNo.textContent = 'No';
+                subDropdown.appendChild(optionYes);
+                subDropdown.appendChild(optionNo);
+                conditionalContent.appendChild(subDropdown);
+            } else if (dropdown.value === 'option3') {
+                const textbox = document.createElement('input');
+                textbox.type = 'text';
+                textbox.id = 'option3_textbox';
+                textbox.name = 'option3_textbox';
+                conditionalContent.appendChild(textbox);
+            }
+        }
+
+        function copyEmailBody() {
+            const emailBody = document.getElementById('emailBody');
+            emailBody.select();
+            document.execCommand('copy');
+            alert('Email body copied to clipboard!');
+        }
+
+        function generateSummary() {
+            const formData = new FormData(document.getElementById('infoForm'));
+            let summary = 'Entered Information:\n';
+            formData.forEach((value, key) => {
+                summary += `${key}: ${value}\n`;
+            });
+
+            summary += '\nChecked Items:\n';
+            document.querySelectorAll('#section2 input[type="checkbox"]').forEach((checkbox) => {
+                if (checkbox.checked) {
+                    summary += `${checkbox.name}\n`;
+                }
+            });
+
+            const dropdownValue = document.getElementById('dropdown').value;
+            if (dropdownValue !== 'none') {
+                summary += `\nConditional Section:\n${dropdownValue}\n`;
+                if (dropdownValue === 'option1') {
+                    document.querySelectorAll('#conditionalContent input[type="checkbox"]').forEach((checkbox) => {
+                        if (checkbox.checked) {
+                            summary += `${checkbox.name}\n`;
+                        }
+                    });
+                } else if (dropdownValue === 'option2') {
+                    document.querySelectorAll('#conditionalContent input[type="checkbox"]').forEach((checkbox) => {
+                        if (checkbox.checked) {
+                            summary += `${checkbox.name}\n`;
+                        }
+                    });
+                    const subDropdownValue = document.getElementById('subDropdown').value;
+                    summary += `Sub-option: ${subDropdownValue}\n`;
+                } else if (dropdownValue === 'option3') {
+                    const textboxValue = document.getElementById('option3_textbox').value;
+                    summary += `Textbox: ${textboxValue}\n`;
+                }
+            }
+
+            document.getElementById('summary').value = summary;
+        }
+    </script>
+</body>
+</html>
